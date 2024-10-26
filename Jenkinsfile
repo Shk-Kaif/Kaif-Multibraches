@@ -4,8 +4,8 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                // Replace 'github-creds' with your actual Jenkins credentials ID for GitHub
-                git branch: "${BRANCH_NAME}", url: 'https://github.com/Shk-Kaif/Kaif-Multibraches.git', credentialsId: 'github-creds'
+                // Check out the code from the main branch or any specific branch in your repo
+                git branch: 'main', url: 'https://github.com/Shk-Kaif/Kaif-Multibraches.git' // Replace <your-repo-url> with the actual repository URL
             }
         }
 
@@ -19,7 +19,8 @@ pipeline {
                         configName: 'uat-server',       // SSH configuration name for UAT server
                         transfers: [
                             sshTransfer(
-                                sourceFiles: '*/',      // Files to transfer, adjust as needed
+                                sourceFiles: '**/*',      // Files to transfer, adjust as needed
+                                removePrefix: '',         // Optional: remove prefix from local path
                                 remoteDirectory: '/usr/share/nginx/html', // Directory on UAT server
                                 execCommand: '''#!/bin/bash
                                     echo "Deploying to UAT server..."
@@ -44,7 +45,7 @@ pipeline {
                         configName: 'prod-server',       // SSH configuration name for Prod server
                         transfers: [
                             sshTransfer(
-                                sourceFiles: '*/',      // Files to transfer, adjust as needed
+                                sourceFiles: '**/*',      // Files to transfer, adjust as needed
                                 remoteDirectory: '/usr/share/nginx/html', // Directory on Prod server
                                 execCommand: '''#!/bin/bash
                                     echo "Deploying to Production server..."
@@ -69,7 +70,7 @@ pipeline {
                         configName: 'dev-server',       // SSH configuration name for Dev server
                         transfers: [
                             sshTransfer(
-                                sourceFiles: '*/',      // Files to transfer, adjust as needed
+                                sourceFiles: '**/*',      // Files to transfer, adjust as needed
                                 remoteDirectory: '/usr/share/nginx/html', // Directory on Dev server
                                 execCommand: '''#!/bin/bash
                                     echo "Deploying to Dev server..."

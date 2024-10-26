@@ -13,20 +13,71 @@ pipeline {
         }
         stage('Deploy to UAT') {
             steps {
-                // Add your deployment logic for UAT here
-                echo 'Deploying to UAT...'
+                script {
+                    echo 'Deploying to UAT...'
+
+                    // Publish Over SSH for UAT
+                    sshPublisher(publishers: [
+                        sshPublisherDesc(
+                            configName: 'uat-server', // Correct server name for UAT
+                            transfers: [
+                                sshTransfer(
+                                    sourceFiles: '**/*', // Adjust to your source files
+                                    remoteDirectory: '/usr/share/nginx/html' // Target directory on UAT server
+                                )
+                            ],
+                            usePromotionTimestamp: false,
+                            useWorkspaceInPromotion: false,
+                            useWorkspaceInProduction: false
+                        )
+                    ])
+                }
             }
         }
         stage('Deploy to Production') {
             steps {
-                // Add your deployment logic for Production here
-                echo 'Deploying to Production...'
+                script {
+                    echo 'Deploying to Production...'
+
+                    // Publish Over SSH for Production
+                    sshPublisher(publishers: [
+                        sshPublisherDesc(
+                            configName: 'prod-server', // Correct server name for Production
+                            transfers: [
+                                sshTransfer(
+                                    sourceFiles: '**/*', // Adjust to your source files
+                                    remoteDirectory: '/usr/share/nginx/html' // Target directory on Production server
+                                )
+                            ],
+                            usePromotionTimestamp: false,
+                            useWorkspaceInPromotion: false,
+                            useWorkspaceInProduction: false
+                        )
+                    ])
+                }
             }
         }
         stage('Deploy to Dev') {
             steps {
-                // Add your deployment logic for Dev here
-                echo 'Deploying to Dev...'
+                script {
+                    echo 'Deploying to Dev...'
+
+                    // Publish Over SSH for Dev
+                    sshPublisher(publishers: [
+                        sshPublisherDesc(
+                            configName: 'dev-server', // Correct server name for Dev
+                            transfers: [
+                                sshTransfer(
+                                    sourceFiles: '**/*', // Adjust to your source files
+                                    remoteDirectory: '/usr/share/nginx/html' // Target directory on Dev server
+                                )
+                            ],
+                            usePromotionTimestamp: false,
+                            useWorkspaceInPromotion: false,
+                            useWorkspaceInProduction: false
+                        )
+                    ])
+                }
             }
         }
     }

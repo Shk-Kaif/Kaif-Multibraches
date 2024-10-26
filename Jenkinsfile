@@ -23,7 +23,7 @@ pipeline {
                             transfers: [
                                 sshTransfer(
                                     sourceFiles: '**/*', // Adjust to your source files
-                                    remoteDirectory: '/usr/share/nginx/html' // Target directory on UAT server
+                                   
                                 )
                             ],
                             usePromotionTimestamp: false,
@@ -46,7 +46,7 @@ pipeline {
                             transfers: [
                                 sshTransfer(
                                     sourceFiles: '**/*', // Adjust to your source files
-                                    remoteDirectory: '/usr/share/nginx/html' // Target directory on Production server
+                                    
                                 )
                             ],
                             usePromotionTimestamp: false,
@@ -69,7 +69,7 @@ pipeline {
                             transfers: [
                                 sshTransfer(
                                     sourceFiles: '**/*', // Adjust to your source files
-                                    remoteDirectory: '/usr/share/nginx/html' // Target directory on Dev server
+                                   
                                 )
                             ],
                             usePromotionTimestamp: false,

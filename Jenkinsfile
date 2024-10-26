@@ -1,30 +1,34 @@
 pipeline {
     agent any
 
+    environment {
+        BRANCH_NAME = "${env.GIT_BRANCH ?: 'main'}"  // Dynamically assign branch name
+    }
+
     stages {
         stage('Checkout Code') {
             steps {
-                // Check out the code from the main branch or any specific branch in your repo
-                git branch: 'main', url: 'https://github.com/Shk-Kaif/Kaif-Multibraches.git' // Replace <your-repo-url> with the actual repository URL
+                // Checkout from the specified branch
+                git branch: "${BRANCH_NAME}", url: 'https://github.com/Shk-Kaif/Kaif-Multibraches.git'
             }
         }
 
         stage('Deploy to UAT') {
             when {
-                expression { return env.BRANCH_NAME == 'Uat' }  // Runs only if branch is Uat
+                expression { return BRANCH_NAME == 'origin/Uat' }  // Ensure branch check matches remote branch name
             }
             steps {
                 sshPublisher(publishers: [
                     sshPublisherDesc(
-                        configName: 'uat-server',       // SSH configuration name for UAT server
+                        configName: 'uat-server',
                         transfers: [
                             sshTransfer(
-                                sourceFiles: '*/',      // Files to transfer, adjust as needed
-                                removePrefix: '',         // Optional: remove prefix from local path
-                                remoteDirectory: '/usr/share/nginx/html', // Directory on UAT server
-                                execCommand: '''#!/bin/bash
+                                sourceFiles: '**/*',  // Adjusted to match all files
+                                removePrefix: '',     
+                                remoteDirectory: '/usr/share/nginx/html',
+                                execCommand: '''
                                     echo "Deploying to UAT server..."
-                                    sudo systemctl reload nginx  # Reload Nginx after deploying
+                                    sudo systemctl reload nginx
                                     echo "Deployment to UAT server complete."
                                 '''
                             )
@@ -37,19 +41,19 @@ pipeline {
 
         stage('Deploy to Production') {
             when {
-                expression { return env.BRANCH_NAME == 'Prod' }  // Runs only if branch is Prod
+                expression { return BRANCH_NAME == 'origin/Prod' }
             }
             steps {
                 sshPublisher(publishers: [
                     sshPublisherDesc(
-                        configName: 'prod-server',       // SSH configuration name for Prod server
+                        configName: 'prod-server',
                         transfers: [
                             sshTransfer(
-                                sourceFiles: '*/',      // Files to transfer, adjust as needed
-                                remoteDirectory: '/usr/share/nginx/html', // Directory on Prod server
-                                execCommand: '''#!/bin/bash
+                                sourceFiles: '**/*',
+                                remoteDirectory: '/usr/share/nginx/html',
+                                execCommand: '''
                                     echo "Deploying to Production server..."
-                                    sudo systemctl reload nginx  # Reload Nginx after deploying
+                                    sudo systemctl reload nginx
                                     echo "Deployment to Production server complete."
                                 '''
                             )
@@ -62,19 +66,19 @@ pipeline {
 
         stage('Deploy to Dev') {
             when {
-                expression { return env.BRANCH_NAME == 'Dev' }  // Runs only if branch is Dev
+                expression { return BRANCH_NAME == 'origin/Dev' }
             }
             steps {
                 sshPublisher(publishers: [
                     sshPublisherDesc(
-                        configName: 'dev-server',       // SSH configuration name for Dev server
+                        configName: 'dev-server',
                         transfers: [
                             sshTransfer(
-                                sourceFiles: '*/',      // Files to transfer, adjust as needed
-                                remoteDirectory: '/usr/share/nginx/html', // Directory on Dev server
-                                execCommand: '''#!/bin/bash
+                                sourceFiles: '**/*',
+                                remoteDirectory: '/usr/share/nginx/html',
+                                execCommand: '''
                                     echo "Deploying to Dev server..."
-                                    sudo systemctl reload nginx  # Reload Nginx after deploying
+                                    sudo systemctl reload nginx
                                     echo "Deployment to Dev server complete."
                                 '''
                             )

@@ -1,11 +1,14 @@
 pipeline {
     agent any
+    parameters {
+        string(name: 'BRANCH_NAME', defaultValue: 'Uat', description: 'Branch to deploy')
+    }
     stages {
         stage('Checkout Code') {
             steps {
                 script {
                     // Ensure Git credentials are specified
-                    git branch: 'Uat', // Change this to the desired branch if needed
+                    git branch: "${params.BRANCH_NAME}",
                         url: 'https://github.com/Shk-Kaif/Kaif-Multibraches.git',
                         credentialsId: 'Git-Pat'
                 }
@@ -19,11 +22,10 @@ pipeline {
                     // Publish Over SSH for UAT
                     sshPublisher(publishers: [
                         sshPublisherDesc(
-                            configName: 'uat-server', // Correct server name for UAT
+                            configName: 'uat-server', 
                             transfers: [
                                 sshTransfer(
-                                    sourceFiles: '**/*', // Adjust to your source files
-                                   
+                                    sourceFiles: '**/*' // No remote directory specified
                                 )
                             ],
                             usePromotionTimestamp: false,
@@ -42,11 +44,10 @@ pipeline {
                     // Publish Over SSH for Production
                     sshPublisher(publishers: [
                         sshPublisherDesc(
-                            configName: 'prod-server', // Correct server name for Production
+                            configName: 'prod-server',
                             transfers: [
                                 sshTransfer(
-                                    sourceFiles: '**/*', // Adjust to your source files
-                                    
+                                    sourceFiles: '**/*' // No remote directory specified
                                 )
                             ],
                             usePromotionTimestamp: false,
@@ -65,11 +66,10 @@ pipeline {
                     // Publish Over SSH for Dev
                     sshPublisher(publishers: [
                         sshPublisherDesc(
-                            configName: 'dev-server', // Correct server name for Dev
+                            configName: 'dev-server',
                             transfers: [
                                 sshTransfer(
-                                    sourceFiles: '**/*', // Adjust to your source files
-                                   
+                                    sourceFiles: '**/*' // No remote directory specified
                                 )
                             ],
                             usePromotionTimestamp: false,

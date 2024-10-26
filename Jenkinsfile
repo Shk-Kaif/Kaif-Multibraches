@@ -23,7 +23,7 @@ pipeline {
                             transfers: [
                                 sshTransfer(
                                     sourceFiles: '**/*', // Adjust to your source files
-                                    remoteDirectory: '/usr/share/nginx/html' // Target directory on UAT server
+                                   
                                 )
                             ],
                             usePromotionTimestamp: false,
